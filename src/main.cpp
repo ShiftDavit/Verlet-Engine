@@ -3,38 +3,14 @@
 #include <string>
 #include "raylib.h"
 #include "math/Vec2.h"
+#include "physics/constants.h"
+#include "physics/Particle.h"
+#include "physics/Solver.h"
 
 using std::vector;
 
-constexpr float G { 9.8f };
 constexpr int WIN_WIDTH { 1200 };
 constexpr int WIN_HEIGHT { 800 };
-constexpr float PHYSICS_STEP { 1.f/60 };
-
-struct Particle {
-    Vec2 pos;
-    Vec2 prevPos;
-    Vec2 accel;
-
-    float radius;
-};
-
-void solve(vector<Particle>& parts, float dt=PHYSICS_STEP){
-    Vec2 tmp{};
-    Vec2 nextP{};
-
-    for (auto& p : parts){
-        tmp = p.pos;
-        nextP = p.pos * 2 - p.prevPos + p.accel * dt * dt;
-
-        p.pos = nextP;
-        p.prevPos = tmp;
-
-        if (p.pos.y > WIN_HEIGHT - p.radius){
-            p.prevPos = p.pos + p.pos - p.prevPos;
-        }
-    }
-}
 
 void renderParticles(vector<Particle>& parts){
     for (auto& p : parts){
@@ -54,6 +30,8 @@ int main(){
     vector<Particle> parts {
         
     };
+
+    Solver s( parts );
     
     float dt{};
     while (!WindowShouldClose()) {
@@ -67,7 +45,7 @@ int main(){
                 Vec2{(float)GetMouseX(),
                 (float)GetMouseY(),},
 
-                Vec2{0,G},
+                Vec2{0,physics::G},
 
                 (float)(rand() % 10 + 10)
             });
@@ -75,7 +53,7 @@ int main(){
 
         // Solve
         for (int i = 0; i < 6; ++i){
-            solve(parts, dt);
+            s.step(dt);
         }
         // Render
         BeginDrawing();
