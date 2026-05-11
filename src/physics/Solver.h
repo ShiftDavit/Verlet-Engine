@@ -10,6 +10,7 @@ class Solver {
         Solver(std::vector<Particle>&);
 
         void step(float dt);
+        void step(float dt, int subSteps);
         void addConstraint(Constraint& constraint);
         void addParticle(const Particle& particle);
 
