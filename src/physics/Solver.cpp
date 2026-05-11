@@ -33,9 +33,29 @@ void Solver::applyConstraints(){
     }
 }
 
-void Solver::step(float dt=physics::PHYSICS_STEP) {
+void Solver::solveCollisions(){
+    for (int i = 0; i < particles.size(); ++i){
+        for (int j = 0; j < particles.size(); ++j){
+            if (i==j) continue;
 
+            Vec2 collisionAxis = particles[i].pos - particles[j].pos;
+            float dist = collisionAxis.magnitude();
+            float combinedRadius = particles[i].radius + particles[j].radius;
+
+            // Overlapping
+            if (dist < combinedRadius){
+                float correction = combinedRadius - dist;
+                Vec2 direction = collisionAxis.unit();
+
+                particles[i].pos += direction*(correction/2);
+                particles[j].pos -= direction*(correction/2);
+            }
+        }
+    }
+}
+
+void Solver::step(float dt=physics::PHYSICS_STEP) {
     verletIntegrate(dt);
     applyConstraints();
-
+    solveCollisions();
 }
