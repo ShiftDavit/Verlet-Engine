@@ -47,14 +47,14 @@ int main(){
 
                 Vec2{0,physics::G},
 
-                (float)(rand() % 5 + 10)
+                (float)(rand() % 5 + 20)
             };
             s.addParticle(p);
         }
 
         // Solve
         if (eps >= PHYSICS_STEP){
-            s.step(PHYSICS_STEP);
+            s.step(PHYSICS_STEP, 6);
             eps -= PHYSICS_STEP;
         }
 
