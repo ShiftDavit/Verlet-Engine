@@ -15,15 +15,13 @@ void Solver::addParticle(const Particle& particle){
 };
 
 void Solver::verletIntegrate(float dt){
-    Vec2 tmp{};
-    Vec2 nextP{};
+    Vec2 velocity;
 
     for (auto& p : particles){
-        tmp = p.pos;
-        nextP = p.pos * 2 - p.prevPos + p.accel * dt * dt;
-
-        p.pos = nextP;
-        p.prevPos = tmp;
+        velocity = p.pos - p.prevPos;
+        p.prevPos = p.pos;
+        
+        p.pos += velocity + p.accel * dt * dt;
     }
 }
 
