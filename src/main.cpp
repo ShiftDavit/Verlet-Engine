@@ -7,7 +7,7 @@
 #include "physics/Particle.h"
 #include "physics/Solver.h"
 
-using std::vector;
+using std::vector, physics::PHYSICS_STEP;
 
 constexpr int WIN_WIDTH { 1200 };
 constexpr int WIN_HEIGHT { 800 };
@@ -18,14 +18,10 @@ void renderParticles(vector<Particle>& parts){
     }
 }
 
-void showFps(float dt){
-    std::string s = "FPS: " + std::to_string(1/dt);
-    DrawText(s.c_str(), 10, 10, 20, WHITE);
-}
 
 int main(){
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "raylib test");
-    SetTargetFPS(60);
+    //SetTargetFPS(60);
 
     vector<Particle> parts{};
     BoundsConstraint bCheck (parts, WIN_WIDTH, WIN_HEIGHT);
@@ -33,18 +29,21 @@ int main(){
     Solver s(parts);
     s.addConstraint(bCheck);
     
+    float eps{};
     float dt{};
+    
     while (!WindowShouldClose()) {
-
         dt = GetFrameTime();
+        eps += dt;
 
         if (IsMouseButtonPressed(0)){
+
             Vec2 mousePos {(float)GetMouseX(),
                 (float)GetMouseY()};
 
             Particle p {
                 mousePos,
-                mousePos - Vec2{.5f,0},
+                mousePos - Vec2{3.f,0},
 
                 Vec2{0,physics::G},
 
@@ -54,19 +53,21 @@ int main(){
         }
 
         // Solve
-        for (int i = 0; i < 6; ++i){
-            s.step(dt);
+        if (eps >= PHYSICS_STEP){
+            s.step(PHYSICS_STEP);
+            eps -= PHYSICS_STEP;
         }
+
         // Render
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(Color{20,20,20,20});
 
-        showFps(dt);
+        DrawFPS(10, 10);
         renderParticles(parts);
 
         EndDrawing();
     }
-
+    
     CloseWindow();
 
     return 0;
