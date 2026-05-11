@@ -2,8 +2,17 @@
 #include "constants.h"
 #include <vector>
 #include <iostream>
+#include "constraints/Constraint.h"
 
-Solver::Solver(std::vector<Particle>& p) : particles(p){}
+Solver::Solver(std::vector<Particle>& p) : particles(p) {}
+
+void Solver::addConstraint(Constraint& constraint){
+    constraints.push_back(&constraint);
+};
+
+void Solver::addParticle(const Particle& particle){
+    particles.push_back(particle);
+};
 
 void Solver::verletIntegrate(float dt){
     Vec2 tmp{};
@@ -18,6 +27,15 @@ void Solver::verletIntegrate(float dt){
     }
 }
 
+void Solver::applyConstraints(){
+    for (auto& c : constraints){
+        c->apply();
+    }
+}
+
 void Solver::step(float dt=physics::PHYSICS_STEP) {
+
     verletIntegrate(dt);
+    applyConstraints();
+
 }

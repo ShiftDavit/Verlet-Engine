@@ -8,6 +8,7 @@ set(CMAKE_C_STANDARD 17)
 add_executable(${PROJECT_NAME} 
     src/main.cpp
     src/physics/Solver.cpp
+    src/physics/constraints/boundsConstraint.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
