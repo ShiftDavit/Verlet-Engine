@@ -1,4 +1,5 @@
 #include "boundsConstraint.h"
+#include "../constants.h"
 
 BoundsConstraint::BoundsConstraint(std::vector<Particle>& particles)
     : particles(particles), left(0.0f), top(0.0f), right(0.0f), bottom(0.0f), enabled(false) {}
@@ -30,18 +31,18 @@ void BoundsConstraint::apply(){
 
         if (p.pos.x < minX){
             p.pos.x = minX;
-            p.prevPos.x = p.pos.x + velX*.45;
+            p.prevPos.x = p.pos.x + velX * physics::FRICTION;
         } else if (p.pos.x > maxX){
             p.pos.x = maxX;
-            p.prevPos.x = p.pos.x + velX*.45;
+            p.prevPos.x = p.pos.x + velX * physics::FRICTION;
         }
 
         if (p.pos.y < minY){
             p.pos.y = minY;
-            p.prevPos.y = p.pos.y + velY*.45;
+            p.prevPos.y = p.pos.y + velY * physics::FRICTION;
         } else if (p.pos.y > maxY){
             p.pos.y = maxY;
-            p.prevPos.y = p.pos.y + velY*.45;
+            p.prevPos.y = p.pos.y + velY * physics::FRICTION;
         }
     }
 }
