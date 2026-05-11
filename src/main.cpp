@@ -27,28 +27,30 @@ int main(){
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "raylib test");
     SetTargetFPS(60);
 
-    vector<Particle> parts {
-        
-    };
+    vector<Particle> parts{};
+    BoundsConstraint bCheck (parts, WIN_WIDTH, WIN_HEIGHT);
 
-    Solver s( parts );
+    Solver s(parts);
+    s.addConstraint(bCheck);
     
     float dt{};
     while (!WindowShouldClose()) {
 
         dt = GetFrameTime();
 
-        if (IsMouseButtonDown(0)){
-            parts.push_back(Particle {
-                Vec2{(float)GetMouseX(),
-                (float)GetMouseY(),},
-                Vec2{(float)GetMouseX(),
-                (float)GetMouseY(),},
+        if (IsMouseButtonPressed(0)){
+            Vec2 mousePos {(float)GetMouseX(),
+                (float)GetMouseY()};
+
+            Particle p {
+                mousePos,
+                mousePos - Vec2{.5f,0},
 
                 Vec2{0,physics::G},
 
-                (float)(rand() % 10 + 10)
-            });
+                (float)(rand() % 5 + 10)
+            };
+            s.addParticle(p);
         }
 
         // Solve
