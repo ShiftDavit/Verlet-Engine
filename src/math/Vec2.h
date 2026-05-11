@@ -11,12 +11,29 @@ struct Vec2
         return std::sqrt(x*x + y*y);
     }
 
+    float distance(const Vec2& other) const {
+        float diffX = x - other.x;
+        float diffY = y - other.y;
+
+        return std::sqrt(diffX*diffX + diffY*diffY);
+    }
+
+    Vec2 unit() {
+        return Vec2{x/magnitude(), y/magnitude()};
+    }
+
     inline Vec2 operator+(const Vec2& other) const {
         return Vec2{x + other.x, y + other.y};
     }
 
     inline Vec2 operator-(const Vec2& other) const{
         return Vec2{x - other.x, y - other.y};
+    }
+
+    inline Vec2& operator-=(const Vec2& other){
+        x -= other.x;
+        y -= other.y;
+        return *this;
     }
 
     inline Vec2& operator+=(const Vec2& other){
