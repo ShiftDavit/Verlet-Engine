@@ -2,7 +2,8 @@
 
 #include <vector>
 
-#include "Constraint.h"
+#include "../../state/Constraint.h"
+#include "../../state/Particle.h"
 
 class BoundsConstraint : public Constraint {
     public:

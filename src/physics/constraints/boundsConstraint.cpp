@@ -1,4 +1,4 @@
-#include "boundsConstraint.h"
+#include "BoundsConstraint.h"
 #include "../constants.h"
 
 BoundsConstraint::BoundsConstraint(std::vector<Particle>& particles)
