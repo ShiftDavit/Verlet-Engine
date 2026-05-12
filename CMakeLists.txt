@@ -3,12 +3,14 @@ project(VerletEngine)
 
 add_subdirectory(external/raylib)
 
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(${PROJECT_NAME} 
     src/main.cpp
     src/physics/Solver.cpp
-    src/physics/constraints/boundsConstraint.cpp
+    src/physics/constraints/BoundsConstraint.cpp
+    src/physics/constraints/DistanceConstraint.cpp
     src/render/Renderer.cpp
 )
 

@@ -9,6 +9,8 @@
 #include "physics/Solver.h"
 #include "state/Particle.h"
 #include "render/Renderer.h"
+#include "physics/constraints/DistanceConstraint.h"
+#include "physics/constraints/BoundsConstraint.h"
 
 using std::vector, physics::PHYSICS_STEP;
 
@@ -22,23 +24,44 @@ void renderParticles(vector<Particle>& parts){
     }
 }
 
-
 int main(){
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "raylib test");
     //SetTargetFPS(60);
 
+    Particle test1 {
+        Vec2 {400, 200},
+        Vec2 {400, 200},
+        
+        Vec2{0,physics::G},
+
+        20
+    };
+    
+    Particle test2 {
+        Vec2 {500, 200},
+        Vec2 {500, 200},
+        
+        Vec2{0,physics::G},
+
+        20
+    };
+        
     vector<Particle> parts{};
+    parts.push_back(test1);
+    parts.push_back(test2);
+    
     vector<Constraint*> constraints{};
-
-    BoundsConstraint bCheck (parts, WIN_WIDTH, WIN_HEIGHT);
-
-    constraints.push_back(&bCheck);
-
+    
+    BoundsConstraint bCheck (WIN_WIDTH, WIN_HEIGHT);
+    DistanceConstraint dCheck (0, 1, 80);
     World w {
         parts,
         constraints
     };
 
+    constraints.push_back(&bCheck);
+    constraints.push_back(&dCheck);
+    
     Solver s(w);
     
     float eps{};
@@ -50,7 +73,7 @@ int main(){
         eps += dt;
         particleSpawnTimer += dt;
 
-        if (IsMouseButtonDown(0) && particleSpawnTimer >= PARTICLE_SPAWN_INTERVAL){
+        if (IsMouseButtonPressed(0) && particleSpawnTimer >= PARTICLE_SPAWN_INTERVAL){
             particleSpawnTimer = 0.0f;
 
             Vec2 mousePos {(float)GetMouseX(),
@@ -82,7 +105,7 @@ int main(){
 
         EndDrawing();
     }
-    
+
     CloseWindow();
 
     return 0;
