@@ -1,23 +1,17 @@
 #include "Solver.h"
 #include "constants.h"
+#include "../state/Constraint.h"
+#include "../state/World.h"
+
 #include <vector>
 #include <iostream>
-#include "constraints/Constraint.h"
 
-Solver::Solver(std::vector<Particle>& p) : particles(p) {}
-
-void Solver::addConstraint(Constraint& constraint){
-    constraints.push_back(&constraint);
-};
-
-void Solver::addParticle(const Particle& particle){
-    particles.push_back(particle);
-};
+Solver::Solver(World& w) : world(w) {}
 
 void Solver::verletIntegrate(float dt){
     Vec2 velocity;
 
-    for (auto& p : particles){
+    for (auto& p : world.particles){
         velocity = p.pos - p.prevPos;
         p.prevPos = p.pos;
         
@@ -26,27 +20,29 @@ void Solver::verletIntegrate(float dt){
 }
 
 void Solver::applyConstraints(){
-    for (auto& c : constraints){
+    for (auto& c : world.constraints){
         c->apply();
     }
 }
 
 void Solver::solveCollisions(){
-    for (int i {0}; i < particles.size(); ++i){
-        for (int j {0}; j < particles.size(); ++j){
-            if (i==j) continue;
-
-            Vec2 collisionAxis = particles[i].pos - particles[j].pos;
+    for (std::size_t i {0}; i < world.particles.size(); ++i){
+        Particle& p1 = world.particles[i];
+        for (std::size_t j {i + 1}; j < world.particles.size(); ++j){
+            Particle& p2 = world.particles[j];
+            Vec2 collisionAxis = p1.pos - p2.pos;
             float dist = collisionAxis.magnitude();
-            float combinedRadius = particles[i].radius + particles[j].radius;
+            float combinedRadius = p1.radius + p2.radius;
 
             // Overlapping
             if (dist < combinedRadius){
                 float correction = (combinedRadius - dist) * physics::FRICTION;
-                Vec2 direction = collisionAxis.unit();
+                Vec2 direction = dist > 0.0f
+                    ? collisionAxis * (1.0f / dist)
+                    : Vec2{1.0f, 0.0f};
 
-                particles[i].pos += direction*(correction/2);
-                particles[j].pos -= direction*(correction/2);
+                p1.pos += direction*(correction/2);
+                p2.pos -= direction*(correction/2);
             }
         }
     }
