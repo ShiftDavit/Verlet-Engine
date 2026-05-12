@@ -19,6 +19,11 @@ struct Vec2
     }
 
     Vec2 unit() {
+        float mag = magnitude();
+        if (mag < 1e-6){ // Avoid division by 0
+            return Vec2{0,0}; 
+        }
+
         return Vec2{x/magnitude(), y/magnitude()};
     }
 
