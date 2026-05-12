@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/physics/Solver.cpp
     src/physics/constraints/boundsConstraint.cpp
+    src/render/Renderer.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
