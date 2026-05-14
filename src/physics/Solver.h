@@ -5,7 +5,6 @@
 #include "../state/Particle.h"
 #include "../state/Constraint.h"
 #include "../state/World.h"
-#include "constraints/boundsConstraint.h"
 
 class Solver {
     public:
@@ -15,7 +14,7 @@ class Solver {
         void step(float dt, int subSteps);
 
     protected:
-        World world;
+        World& world;
 
         void verletIntegrate(float dt);
         void solveCollisions();

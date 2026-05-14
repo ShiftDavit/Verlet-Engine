@@ -21,7 +21,7 @@ void Solver::verletIntegrate(float dt){
 
 void Solver::applyConstraints(){
     for (auto& c : world.constraints){
-        c->apply();
+        c->apply(world);
     }
 }
 
@@ -37,9 +37,7 @@ void Solver::solveCollisions(){
             // Overlapping
             if (dist < combinedRadius){
                 float correction = (combinedRadius - dist) * physics::FRICTION;
-                Vec2 direction = dist > 0.0f
-                    ? collisionAxis * (1.0f / dist)
-                    : Vec2{1.0f, 0.0f};
+                Vec2 direction = collisionAxis.unit();
 
                 p1.pos += direction*(correction/2);
                 p2.pos -= direction*(correction/2);
