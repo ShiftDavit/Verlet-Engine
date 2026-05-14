@@ -1,7 +1,10 @@
 #pragma once
 
-class Constraint {
-    public:
-        virtual ~Constraint() = default;
-        virtual void apply() = 0;
+struct World;
+
+class Constraint
+{
+public:
+    virtual ~Constraint() = default;
+    virtual void apply(World &) = 0;
 };
