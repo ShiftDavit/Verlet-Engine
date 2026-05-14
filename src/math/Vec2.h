@@ -24,7 +24,7 @@ struct Vec2
             return Vec2{0,0}; 
         }
 
-        return Vec2{x/magnitude(), y/magnitude()};
+        return Vec2{x/mag, y/mag};
     }
 
     inline Vec2 operator+(const Vec2& other) const {
@@ -49,6 +49,11 @@ struct Vec2
 
     inline Vec2 operator*(float factor) const{
         return Vec2{x * factor, y * factor};
+    }
+
+    inline Vec2 operator/(float factor) const{
+        if (factor == 0) factor = 1;
+        return Vec2{x / factor, y / factor};
     }
 
 };
