@@ -4,17 +4,16 @@
 
 #include "../../state/Constraint.h"
 #include "../../state/Particle.h"
+#include "../../state/World.h"
 
 class BoundsConstraint : public Constraint {
     public:
-        BoundsConstraint(std::vector<Particle>& particles);
-        BoundsConstraint(std::vector<Particle>& particles, float width, float height);
-        BoundsConstraint(std::vector<Particle>& particles, float left, float top, float right, float bottom);
+        BoundsConstraint(float width, float height);
+        BoundsConstraint(float left, float top, float right, float bottom);
 
-        void apply() override;
+        void apply(World&) override;
 
     private:
-        std::vector<Particle>& particles;
         float left;
         float top;
         float right;
