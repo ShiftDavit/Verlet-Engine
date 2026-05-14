@@ -2,11 +2,13 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <cstdlib>
 
 #include "raylib.h"
 #include "math/Vec2.h"
 #include "physics/constants.h"
 #include "physics/Solver.h"
+#include "state/World.h"
 #include "state/Particle.h"
 #include "render/Renderer.h"
 #include "physics/constraints/DistanceConstraint.h"
@@ -14,99 +16,107 @@
 
 using std::vector, physics::PHYSICS_STEP;
 
-constexpr int WIN_WIDTH { 1200 };
-constexpr int WIN_HEIGHT { 800 };
-constexpr float PARTICLE_SPAWN_INTERVAL { 0.05f };
+constexpr int WIN_WIDTH{1200};
+constexpr int WIN_HEIGHT{800};
+constexpr float PARTICLE_SPAWN_INTERVAL{0.01f};
 
-void renderParticles(vector<Particle>& parts){
-    for (auto& p : parts){
-        drawParticle(p);
-    }
+void renderParticles(vector<Particle> &parts)
+{
+  for (auto &p : parts)
+  {
+    drawParticle(p);
+  }
 }
 
-int main(){
-    InitWindow(WIN_WIDTH, WIN_HEIGHT, "raylib test");
-    //SetTargetFPS(60);
+void drawBodyCount(World &w)
+{
+  const std::string bodyCount = "Particles: " + std::to_string(w.particles.size());
+  DrawText(bodyCount.c_str(), 10, 40, 20, RAYWHITE);
+}
 
-    Particle test1 {
-        Vec2 {400, 200},
-        Vec2 {400, 200},
-        
-        Vec2{0,physics::G},
+int main()
+{
+  InitWindow(WIN_WIDTH, WIN_HEIGHT, "raylib test");
+  // SetTargetFPS(60);
 
-        20
-    };
-    
-    Particle test2 {
-        Vec2 {500, 200},
-        Vec2 {500, 200},
-        
-        Vec2{0,physics::G},
+  World w{};
+  Solver s(w);
 
-        20
-    };
-        
-    vector<Particle> parts{};
-    parts.push_back(test1);
-    parts.push_back(test2);
-    
-    vector<Constraint*> constraints{};
-    
-    BoundsConstraint bCheck (WIN_WIDTH, WIN_HEIGHT);
-    DistanceConstraint dCheck (0, 1, 80);
-    World w {
-        parts,
-        constraints
-    };
+  // Test particles
+  Particle p1{
+      Vec2{400, 500},
+      Vec2{400, 500},
 
-    constraints.push_back(&bCheck);
-    constraints.push_back(&dCheck);
-    
-    Solver s(w);
-    
-    float eps{};
-    float dt{};
-    float particleSpawnTimer{};
-    
-    while (!WindowShouldClose()) {
-        dt = GetFrameTime();
-        eps += dt;
-        particleSpawnTimer += dt;
+      Vec2{0, physics::G},
 
-        if (IsMouseButtonPressed(0) && particleSpawnTimer >= PARTICLE_SPAWN_INTERVAL){
-            particleSpawnTimer = 0.0f;
+      20};
 
-            Vec2 mousePos {(float)GetMouseX(),
-                (float)GetMouseY()};
+  Particle p2{
+      Vec2{500, 500},
+      Vec2{500, 500},
 
-            Particle p {
-                mousePos,
-                mousePos - Vec2{5.f,0},
+      Vec2{0, physics::G},
 
-                Vec2{0,physics::G},
+      20};
 
-                (float)(rand() % 5 + 20)
-            };
-            w.particles.push_back(p);
-        }
+  w.add(p1);
+  w.add(p2);
 
-        // Solve
-        if (eps >= PHYSICS_STEP){
-            s.step(PHYSICS_STEP, 6);
-            eps -= PHYSICS_STEP;
-        }
+  // Test constraints
+  DistanceConstraint distanceConstraint(0, 1, 80);
+  BoundsConstraint boundsConstraint(WIN_WIDTH, WIN_HEIGHT);
 
-        // Render
-        BeginDrawing();
-        ClearBackground(Color{20,20,20,20});
+  w.add(distanceConstraint);
+  w.add(boundsConstraint);
 
-        renderParticles(w.particles);
-        DrawFPS(10, 10);
+  float eps{};
+  float dt{};
+  float particleSpawnTimer{};
 
-        EndDrawing();
+  while (!WindowShouldClose())
+  {
+    dt = GetFrameTime();
+    eps += dt;
+    particleSpawnTimer += dt;
+
+    if (IsMouseButtonDown(0) && particleSpawnTimer >= PARTICLE_SPAWN_INTERVAL)
+    {
+      particleSpawnTimer = 0.0f;
+
+      Vec2 mousePos{(float)GetMouseX(),
+                    (float)GetMouseY()};
+
+      Particle p{
+          mousePos,
+          mousePos - Vec2{5.f, 0},
+
+          Vec2{0, physics::G},
+
+          (float)(rand() % 5 + 5)};
+      w.add(p);
     }
 
-    CloseWindow();
+    // Solve
+    if (eps >= PHYSICS_STEP)
+    {
+      s.step(PHYSICS_STEP, 6);
+      eps -= PHYSICS_STEP;
+    }
 
-    return 0;
+    // Render
+    BeginDrawing();
+    ClearBackground(Color{20, 20, 20, 20});
+
+    renderParticles(w.particles);
+
+    // Debug
+    DrawFPS(10, 10);
+    drawBodyCount(w);
+
+    EndDrawing();
+  }
+
+  CloseWindow();
+
+  return 0;
 }
