@@ -5,15 +5,16 @@
 #include <cstddef>
 #include <vector>
 
-class DistanceConstraint : public Constraint {
-    public:
-        DistanceConstraint(std::size_t first, std::size_t second, float distance);
+class DistanceConstraint : public Constraint
+{
+public:
+    DistanceConstraint(ParticleID first, ParticleID second, float distance);
 
-        void apply(World&) override;
+    void apply(World &) override;
 
-    private:
-        std::size_t a, b;
-        float targetDistance;
+private:
+    ParticleID p1ID, p2ID;
+    float targetDistance;
 
-        bool enabled;
+    bool enabled;
 };
