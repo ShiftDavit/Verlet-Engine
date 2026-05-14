@@ -22,6 +22,8 @@ void DistanceConstraint::apply(World &w)
     float nudge = (targetDistance - dist) / 2;
     Vec2 direction = diff.unit();
 
-    p1.pos += direction * nudge;
-    p2.pos -= direction * nudge;
+    if (!p1.fixed)
+        p1.pos += direction * nudge;
+    if (!p2.fixed)
+        p2.pos -= direction * nudge;
 }

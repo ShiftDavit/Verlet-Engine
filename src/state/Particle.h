@@ -11,4 +11,5 @@ struct Particle
     Vec2 accel;
 
     float radius;
+    bool fixed;
 };
