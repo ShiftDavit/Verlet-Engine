@@ -91,11 +91,17 @@ void ChainDemo::OnStep(float dt)
         }
     }
 
-    solver.step(world, dt, 4);
+    solver.step(world, dt, 3);
 }
 
 void ChainDemo::OnRender()
 {
+    if (mouseForce.active)
+    {
+        auto &p = world.particles[mouseForce.target];
+        DrawLineEx(GetMousePosition(), Vector2{p.pos.x, p.pos.y}, 2, RAYWHITE);
+    }
+
     drawConstraints(world);
     drawParticles(world);
 }

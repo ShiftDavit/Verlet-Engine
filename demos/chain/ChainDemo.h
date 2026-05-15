@@ -9,7 +9,7 @@ struct MouseForce
 {
     bool active = false;
     verlet::ParticleID target;
-    float strength = 1000.0f;
+    float strength = 500.0f;
 };
 
 class ChainDemo : public verlet::Application
@@ -29,6 +29,6 @@ private:
 
     MouseForce mouseForce;
 
-    int chainCount = 5;
+    int chainCount = 6;
     float spacing = 80.0f;
 };
