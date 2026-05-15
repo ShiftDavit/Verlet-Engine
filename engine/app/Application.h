@@ -13,7 +13,10 @@ namespace verlet
 
         virtual void OnStart() {};
         virtual void OnUpdate(float dt) {};
+
         virtual void OnStep(float dt) {};
+        virtual void PostStep() {};
+
         virtual void OnRender();
 
         void Run();
