@@ -1,8 +1,10 @@
 # ⚡ Verlet Physics Engine
 
-![demo gif](demo.gif)
-
 A real-time 2D physics engine built in C++ using Verlet integration, featuring stable constraint solving, interactive grabbing, and rope/chain simulation.
+
+
+https://github.com/user-attachments/assets/4e45b30c-b57d-47ee-8c88-c67f5275b5a5
+
 
 ---
 
