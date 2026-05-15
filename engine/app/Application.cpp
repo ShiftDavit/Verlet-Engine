@@ -34,6 +34,8 @@ void Application::Run()
             eps -= verlet::PHYSICS_STEP;
         }
 
+        PostStep();
+
         // Render
         BeginDrawing();
         ClearBackground(Color{20, 20, 20, 20});
