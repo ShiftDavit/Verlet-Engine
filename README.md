@@ -27,11 +27,10 @@ A real-time 2D physics engine built in C++ using Verlet integration, featuring s
 
 ## 🧠 Architecture
 
-The engine runs in 4 stages per frame:
-1. Force application (gravity)
-2. Verlet integration step
-3. Constraint solving (iterative relaxation)
-4. Rendering
+The engine runs in 3 stages per frame:
+1. Verlet integration step
+2. Constraint solving (iterative relaxation)
+3. Rendering
 
 This separation allows stable simulation even under high constraint density.
 
