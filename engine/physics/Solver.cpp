@@ -13,7 +13,6 @@ void Solver::verletIntegrate(World &world, float dt)
 
     for (auto &p : world.particles)
     {
-        std::cout << p.fixed << "\n";
         if (p.fixed)
             continue;
         velocity = p.pos - p.prevPos;
