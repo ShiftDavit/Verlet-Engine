@@ -33,6 +33,11 @@ namespace verlet
             return Vec2{x / mag, y / mag};
         }
 
+        Vec2 lerp(const Vec2 &other, float alpha)
+        {
+            return *this + (other - *this) * alpha;
+        }
+
         inline Vec2 operator+(const Vec2 &other) const
         {
             return Vec2{x + other.x, y + other.y};
