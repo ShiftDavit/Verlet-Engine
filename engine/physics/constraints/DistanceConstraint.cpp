@@ -60,5 +60,5 @@ void DistanceConstraint::draw(World &w) const
     const auto &p1 = w.particles[p1ID];
     const auto &p2 = w.particles[p2ID];
 
-    DrawLineEx(Vector2{p1.pos.x, p1.pos.y}, Vector2{p2.pos.x, p2.pos.y}, 10.f, RED);
+    DrawLineEx(Vector2{p1.pos.x, p1.pos.y}, Vector2{p2.pos.x, p2.pos.y}, 8.f, RED);
 }
