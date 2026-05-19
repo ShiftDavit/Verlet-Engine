@@ -3,6 +3,7 @@
 #include "../../engine/app/Application.h"
 #include "../../engine/state/SystemState.h"
 #include "../../engine/physics/Solver.h"
+#include "../../engine/modules/chain/Chain.h"
 #include "../../engine/math/Vec2.h"
 
 struct MouseForce
@@ -26,9 +27,7 @@ public:
 private:
     verlet::World world;
     verlet::Solver solver;
+    verlet::Chain chain;
 
     MouseForce mouseForce;
-
-    int chainCount = 6;
-    float spacing = 80.0f;
 };

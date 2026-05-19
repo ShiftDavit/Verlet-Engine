@@ -1,35 +1,19 @@
 #include "ChainDemo.h"
-#include "../../engine/physics/constraints/DistanceConstraint.h"
 #include "../../engine/physics/constraints/BoundsConstraint.h"
 #include "../../engine/render/Renderer.h"
 #include "raylib.h"
-#include <iostream>
 
 using namespace verlet;
 
 void ChainDemo::OnStart()
 {
+    ChainConfig config;
+    config.start = {400.0f, 200.0f};
+    config.linkCount = 5;
+    config.spacing = 80.0f;
+    config.particleRadius = 30.0f;
 
-    // create particles
-    for (int i = 0; i < chainCount; ++i)
-    {
-        Particle p;
-        p.pos = {400, 200 + i * spacing};
-        p.prevPos = p.pos;
-        p.radius = 30;
-
-        world.add(p);
-    }
-
-    world.particles[0].fixed = true;
-
-    // create constraints
-    for (int i = 0; i < chainCount - 1; i++)
-    {
-        world.add(
-            std::make_unique<DistanceConstraint>(
-                i, i + 1, spacing));
-    }
+    chain.build(world, config);
 
     world.add(
         std::make_unique<BoundsConstraint>(
@@ -72,7 +56,6 @@ void ChainDemo::OnStep(float dt)
         }
     }
 
-    // --- release ---
     if (IsMouseButtonUp(0))
     {
         mouseForce.active = false;
