@@ -1,11 +1,16 @@
 #pragma once
 
+#include "raylib.h"
 #include <cmath>
 
 namespace verlet
 {
     struct Vec2
     {
+        Vec2() = default;
+        Vec2(float x, float y) : x(x), y(y) {};
+        Vec2(Vector2 v) : x(v.x), y(v.y) {};
+
         float x;
         float y;
 
