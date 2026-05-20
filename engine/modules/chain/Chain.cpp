@@ -3,63 +3,32 @@
 #include "../../physics/constraints/DistanceConstraint.h"
 
 #include <memory>
+#include <vector>
+#include <iostream>
 
 using namespace verlet;
 
-Chain::Chain(World &world, const ChainConfig &config)
-{
-    build(world, config);
-}
+Chain::Chain(const std::vector<ChainEntry> &config) : entries(config) {}
 
-void Chain::build(World &world, const ChainConfig &config)
+void Chain::build(World &world)
 {
-    particleIDs.clear();
-
-    if (config.linkCount <= 0)
+    if (entries.size() < 2)
     {
+        std::cout << "Chain is too short\n";
         return;
     }
 
-    Vec2 direction = config.direction;
-    direction = direction.unit();
-    if (direction.magnitude() < 1e-6f)
-    {
-        direction = {0.0f, 1.0f};
-    }
-
-    for (int i = 0; i < config.linkCount; ++i)
-    {
-        Particle particle;
-        particle.pos = config.start + direction * (config.spacing * i);
-        particle.prevPos = particle.pos;
-        particle.accel = config.acceleration;
-        particle.radius = config.particleRadius;
-        particle.fixed = (config.pinFirst && i == 0) ||
-                         (config.pinLast && i == config.linkCount - 1);
-
-        particleIDs.push_back(world.add(particle));
-    }
-
-    for (std::size_t i = 0; i + 1 < particleIDs.size(); ++i)
+    // register entries
+    for (std::size_t i = 0; i + 1 < entries.size(); ++i)
     {
         world.add(std::make_unique<DistanceConstraint>(
-            particleIDs[i],
-            particleIDs[i + 1],
-            config.spacing));
+            entries[i].particleId,
+            entries[i + 1].particleId,
+            entries[i + 1].distanceToPrevious));
     }
-}
-
-const std::vector<ParticleID> &Chain::particles() const
-{
-    return particleIDs;
-}
-
-ParticleID Chain::particle(std::size_t index) const
-{
-    return particleIDs[index];
 }
 
 std::size_t Chain::size() const
 {
-    return particleIDs.size();
+    return entries.size();
 }
