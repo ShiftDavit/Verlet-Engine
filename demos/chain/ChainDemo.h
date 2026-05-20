@@ -29,5 +29,9 @@ private:
     verlet::Solver solver;
     verlet::Chain chain;
 
+    std::vector<verlet::Vec2> drafts;
+    std::vector<verlet::ChainEntry> buildBuffer;
+    bool drafting = false;
+
     MouseForce mouseForce;
 };
