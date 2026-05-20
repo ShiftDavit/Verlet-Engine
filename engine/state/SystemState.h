@@ -17,7 +17,7 @@ namespace verlet
         verlet::Vec2 prevPos;
         verlet::Vec2 accel = Vec2{0, G};
 
-        float radius;
+        float radius = 10;
         bool fixed = false;
     };
 
