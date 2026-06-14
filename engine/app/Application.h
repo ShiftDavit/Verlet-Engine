@@ -24,6 +24,7 @@ namespace verlet
     protected:
         int width = 1280;
         int height = 720;
+        bool debugMode = false;
         const char *title = "Verlet Engine";
     };
 }
