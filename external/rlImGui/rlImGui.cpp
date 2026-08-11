@@ -1,28 +1,28 @@
 /**********************************************************************************************
-*
-*   raylibExtras * Utilities and Shared Components for Raylib
-*
-*   rlImGui * basic ImGui integration
-*
-*   LICENSE: ZLIB
-*   Copyright (c) 2020-2021 Jeffery Myers
-*
-*   This software is provided "as-is", without any express or implied warranty. In no event
-*   will the authors be held liable for any damages arising from the use of this software.
-*
-*   Permission is granted to anyone to use this software for any purpose, including commercial
-*   applications, and to alter it and redistribute it freely, subject to the following restrictions:
-*
-*     1. The origin of this software must not be misrepresented; you must not claim that you
-*     wrote the original software. If you use this software in a product, an acknowledgment
-*     in the product documentation would be appreciated but is not required.
-*
-*     2. Altered source versions must be plainly marked as such, and must not be misrepresented
-*     as being the original software.
-*
-*     3. This notice may not be removed or altered from any source distribution.
-*
-**********************************************************************************************/
+ *
+ *   raylibExtras * Utilities and Shared Components for Raylib
+ *
+ *   rlImGui * basic ImGui integration
+ *
+ *   LICENSE: ZLIB
+ *   Copyright (c) 2020-2021 Jeffery Myers
+ *
+ *   This software is provided "as-is", without any express or implied warranty. In no event
+ *   will the authors be held liable for any damages arising from the use of this software.
+ *
+ *   Permission is granted to anyone to use this software for any purpose, including commercial
+ *   applications, and to alter it and redistribute it freely, subject to the following restrictions:
+ *
+ *     1. The origin of this software must not be misrepresented; you must not claim that you
+ *     wrote the original software. If you use this software in a product, an acknowledgment
+ *     in the product documentation would be appreciated but is not required.
+ *
+ *     2. Altered source versions must be plainly marked as such, and must not be misrepresented
+ *     as being the original software.
+ *
+ *     3. This notice may not be removed or altered from any source distribution.
+ *
+ **********************************************************************************************/
 #include "rlImGui.h"
 
 #include "imgui_impl_raylib.h"
@@ -43,7 +43,7 @@
 static ImGuiMouseCursor CurrentMouseCursor = ImGuiMouseCursor_COUNT;
 static MouseCursor MouseCursorMap[ImGuiMouseCursor_COUNT];
 
-ImGuiContext* GlobalContext = nullptr;
+ImGuiContext *GlobalContext = nullptr;
 
 static constexpr size_t MAX_RAYLIB_KEY = 349;
 static ImGuiKey RaylibKeyMap[MAX_RAYLIB_KEY];
@@ -66,9 +66,9 @@ struct ImGui_ImplRaylib_Data
 {
 };
 
-ImGui_ImplRaylib_Data* ImGui_ImplRaylib_GetBackendData()
+ImGui_ImplRaylib_Data *ImGui_ImplRaylib_GetBackendData()
 {
-    return ImGui::GetCurrentContext() ? static_cast<ImGui_ImplRaylib_Data*>(ImGui::GetPlatformIO().Renderer_RenderState) : nullptr;
+    return ImGui::GetCurrentContext() ? static_cast<ImGui_ImplRaylib_Data *>(ImGui::GetPlatformIO().Renderer_RenderState) : nullptr;
 }
 
 void ImGui_ImplRaylib_CreateBackendData()
@@ -87,30 +87,29 @@ void ImGui_ImplRaylib_FreeBackendData()
     MemFree(ImGui::GetPlatformIO().Renderer_RenderState);
 }
 
-
 Vector2 GetDisplayScale()
 {
 #if defined(__EMSCRIPTEN__)
-    return Vector2{ 1,1 };
+    return Vector2{1, 1};
 #else
     return GetWindowScaleDPI();
 #endif
 }
 
-static const char* GetClipTextCallback(ImGuiContext*)
+static const char *GetClipTextCallback(ImGuiContext *)
 {
     return GetClipboardText();
 }
 
-static void SetClipTextCallback(ImGuiContext*, const char* text)
+static void SetClipTextCallback(ImGuiContext *, const char *text)
 {
     SetClipboardText(text);
 }
 
 static void ImGuiNewFrame(float deltaTime)
 {
-    ImGuiIO& io = ImGui::GetIO();
-    auto* platData = ImGui_ImplRaylib_GetBackendData();
+    ImGuiIO &io = ImGui::GetIO();
+    auto *platData = ImGui_ImplRaylib_GetBackendData();
     if (!platData)
     {
         ImGui_ImplRaylib_CreateBackendData();
@@ -136,7 +135,7 @@ static void ImGuiNewFrame(float deltaTime)
 
 #if !defined(__APPLE__)
     if (!IsWindowState(FLAG_WINDOW_HIGHDPI))
-        resolutionScale = Vector2{ 1,1 };
+        resolutionScale = Vector2{1, 1};
 #endif
 #else
     io.DisplaySize.x = float(GetScreenWidth());
@@ -176,21 +175,21 @@ static void ImGuiNewFrame(float deltaTime)
     }
 }
 
-static void ImGuiTriangleVert(const ImDrawVert& idx_vert)
+static void ImGuiTriangleVert(const ImDrawVert &idx_vert)
 {
 #ifdef __cpp_designated_initializers
-    Color c {
-       .r = static_cast<unsigned char>(idx_vert.col>>0),
-       .g = static_cast<unsigned char>(idx_vert.col>>8),
-       .b = static_cast<unsigned char>(idx_vert.col>>16),
-       .a = static_cast<unsigned char>(idx_vert.col>>24),
+    Color c{
+        .r = static_cast<unsigned char>(idx_vert.col >> 0),
+        .g = static_cast<unsigned char>(idx_vert.col >> 8),
+        .b = static_cast<unsigned char>(idx_vert.col >> 16),
+        .a = static_cast<unsigned char>(idx_vert.col >> 24),
     };
 #else
-    Color c {
-       static_cast<unsigned char>(idx_vert.col>>0),
-       static_cast<unsigned char>(idx_vert.col>>8),
-       static_cast<unsigned char>(idx_vert.col>>16),
-       static_cast<unsigned char>(idx_vert.col>>24),
+    Color c{
+        static_cast<unsigned char>(idx_vert.col >> 0),
+        static_cast<unsigned char>(idx_vert.col >> 8),
+        static_cast<unsigned char>(idx_vert.col >> 16),
+        static_cast<unsigned char>(idx_vert.col >> 24),
     };
 #endif
     rlColor4ub(c.r, c.g, c.b, c.a);
@@ -198,7 +197,7 @@ static void ImGuiTriangleVert(const ImDrawVert& idx_vert)
     rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 }
 
-static void ImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, ImTextureID texturePtr)
+static void ImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx> &indexBuffer, const ImVector<ImDrawVert> &vertBuffer, ImTextureID texturePtr)
 {
     if (count < 3)
         return;
@@ -228,7 +227,7 @@ static void ImGuiRenderTriangles(unsigned int count, int indexStart, const ImVec
 static void EnableScissor(float x, float y, float width, float height)
 {
     rlEnableScissorTest();
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
     ImVec2 scale = io.DisplayFramebufferScale;
 #if !defined(__APPLE__)
@@ -240,9 +239,9 @@ static void EnableScissor(float x, float y, float width, float height)
 #endif
 
     rlScissor((int)(x * scale.x),
-        int((io.DisplaySize.y - (int)(y + height)) * scale.y),
-        (int)(width * scale.x),
-        (int)(height * scale.y));
+              int((io.DisplaySize.y - (int)(y + height)) * scale.y),
+              (int)(width * scale.x),
+              (int)(height * scale.y));
 }
 
 static void SetupMouseCursors(void)
@@ -261,7 +260,7 @@ static void SetupMouseCursors(void)
 void SetupFontAwesome(void)
 {
 #ifndef NO_FONT_AWESOME
-    static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
     ImFontConfig icons_config;
     icons_config.MergeMode = true;
     icons_config.PixelSnapH = true;
@@ -274,7 +273,7 @@ void SetupFontAwesome(void)
 
     icons_config.GlyphRanges = icons_ranges;
 
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
     float size = FONT_AWESOME_ICON_SIZE;
 #if !defined(__APPLE__)
@@ -284,14 +283,13 @@ void SetupFontAwesome(void)
     icons_config.RasterizerMultiply = GetDisplayScale().y;
 #endif
 
-    io.Fonts->AddFontFromMemoryCompressedTTF((void*)fa_solid_900_compressed_data, fa_solid_900_compressed_size, size, &icons_config, icons_ranges);
+    io.Fonts->AddFontFromMemoryCompressedTTF((void *)fa_solid_900_compressed_data, fa_solid_900_compressed_size, size, &icons_config, icons_ranges);
 #endif
-
 }
 
 void SetupBackend(void)
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
     io.BackendPlatformName = "imgui_impl_raylib";
     io.BackendFlags |= ImGuiBackendFlags_HasGamepad | ImGuiBackendFlags_HasSetMousePos | ImGuiBackendFlags_RendererHasTextures;
 
@@ -301,7 +299,7 @@ void SetupBackend(void)
 
     io.MousePos = ImVec2(0, 0);
 
-    ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
+    ImGuiPlatformIO &platformIO = ImGui::GetPlatformIO();
 
     platformIO.Platform_SetClipboardTextFn = SetClipTextCallback;
     platformIO.Platform_GetClipboardTextFn = GetClipTextCallback;
@@ -455,7 +453,7 @@ void rlImGuiBeginInitImGui(void)
         GlobalContext = ImGui::CreateContext(nullptr);
     SetupKeymap();
 
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
     ImFontConfig defaultConfig;
 
@@ -519,69 +517,69 @@ void rlImGuiShutdown(void)
     GlobalContext = nullptr;
 }
 
-void rlImGuiImage(const Texture* image)
+void rlImGuiImage(const Texture *image)
 {
     if (!image)
         return;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-    
+
     ImGui::Image(ImTextureID(image->id), ImVec2(float(image->width), float(image->height)));
 }
 
-bool rlImGuiImageButton(const char* name, const Texture* image)
+bool rlImGuiImageButton(const char *name, const Texture *image)
 {
     if (!image)
         return false;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-    
+
     return ImGui::ImageButton(name, ImTextureID(image->id), ImVec2(float(image->width), float(image->height)));
 }
 
-bool rlImGuiImageButtonSize(const char* name, const Texture* image, Vector2 size)
+bool rlImGuiImageButtonSize(const char *name, const Texture *image, Vector2 size)
 {
     if (!image)
         return false;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-   
+
     return ImGui::ImageButton(name, ImTextureID(image->id), ImVec2(size.x, size.y));
 }
 
-void rlImGuiImageSize(const Texture* image, int width, int height)
+void rlImGuiImageSize(const Texture *image, int width, int height)
 {
     if (!image)
         return;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-    
+
     ImGui::Image(ImTextureID(image->id), ImVec2(float(width), float(height)));
 }
 
-void rlImGuiImageSizeV(const Texture* image, Vector2 size)
+void rlImGuiImageSizeV(const Texture *image, Vector2 size)
 {
     if (!image)
         return;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-    
+
     ImGui::Image(ImTextureID(image->id), ImVec2(size.x, size.y));
 }
 
-void rlImGuiImageRect(const Texture* image, int destWidth, int destHeight, Rectangle sourceRect)
+void rlImGuiImageRect(const Texture *image, int destWidth, int destHeight, Rectangle sourceRect)
 {
     if (!image)
         return;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-    
+
     ImVec2 uv0;
     ImVec2 uv1;
 
@@ -610,28 +608,28 @@ void rlImGuiImageRect(const Texture* image, int destWidth, int destHeight, Recta
     ImGui::Image((ImTextureID)image->id, ImVec2(float(destWidth), float(destHeight)), uv0, uv1);
 }
 
-void rlImGuiImageRenderTexture(const RenderTexture* image)
+void rlImGuiImageRenderTexture(const RenderTexture *image)
 {
     if (!image)
         return;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
-    
-    rlImGuiImageRect(&image->texture, image->texture.width, image->texture.height, Rectangle{ 0,0, float(image->texture.width), -float(image->texture.height) });
+
+    rlImGuiImageRect(&image->texture, image->texture.width, image->texture.height, Rectangle{0, 0, float(image->texture.width), -float(image->texture.height)});
 }
 
-void rlImGuiImageRenderTextureFit(const RenderTexture* image, bool center)
+void rlImGuiImageRenderTextureFit(const RenderTexture *image, bool center)
 {
     if (!image)
         return;
-    
+
     if (GlobalContext)
         ImGui::SetCurrentContext(GlobalContext);
 
     ImVec2 area = ImGui::GetContentRegionAvail();
 
-    float scale =  area.x / image->texture.width;
+    float scale = area.x / image->texture.width;
 
     float y = image->texture.height * scale;
     if (y > area.y)
@@ -645,11 +643,11 @@ void rlImGuiImageRenderTextureFit(const RenderTexture* image, bool center)
     if (center)
     {
         ImGui::SetCursorPosX(0);
-        ImGui::SetCursorPosX(area.x/2 - sizeX/2);
+        ImGui::SetCursorPosX(area.x / 2 - sizeX / 2);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (area.y / 2 - sizeY / 2));
     }
 
-    rlImGuiImageRect(&image->texture, sizeX, sizeY, Rectangle{ 0,0, float(image->texture.width), -float(image->texture.height) });
+    rlImGuiImageRect(&image->texture, sizeX, sizeY, Rectangle{0, 0, float(image->texture.width), -float(image->texture.height)});
 }
 
 // raw ImGui backend API
@@ -666,16 +664,15 @@ bool ImGui_ImplRaylib_Init(void)
     return true;
 }
 
-
 void ImGui_ImplRaylib_Shutdown()
 {
-    ImGuiIO& io =ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
-    for (auto& texture : ImGui::GetPlatformIO().Textures)
+    for (auto &texture : ImGui::GetPlatformIO().Textures)
     {
         if (texture->Status != ImTextureStatus_Destroyed)
         {
-            Texture* backendData = (Texture*)texture->BackendUserData;
+            Texture *backendData = (Texture *)texture->BackendUserData;
             if (backendData && IsTextureValid(*backendData))
             {
                 UnloadTexture(*backendData);
@@ -697,66 +694,67 @@ void ImGui_ImplRaylib_NewFrame(void)
     ImGuiNewFrame(GetFrameTime());
 }
 
-void ImGui_ImplRaylib_UpdateTexture(ImTextureData* tex)
+void ImGui_ImplRaylib_UpdateTexture(ImTextureData *tex)
 {
     switch (tex->Status)
     {
-        case ImTextureStatus_OK:
-        case ImTextureStatus_Destroyed:
-        default:
-            break;
-
-        case ImTextureStatus_WantCreate:
-        {
-            Image img = { 0 };
-            img.width = tex->Width;
-            img.height = tex->Height;
-
-            img.format = tex->Format == ImTextureFormat_Alpha8 ? PIXELFORMAT_UNCOMPRESSED_GRAYSCALE : PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-            img.mipmaps = 1;
-            img.data = tex->GetPixels();
-
-            Texture* texture = (Texture*)MemAlloc(sizeof(Texture));
-            tex->BackendUserData = texture;;
-            *texture = LoadTextureFromImage(img);
-            tex->SetTexID(ImTextureID(texture->id));
-            tex->Status = ImTextureStatus_OK;
-        }
-            break;
-
-        case ImTextureStatus_WantUpdates:
-        {
-            Texture* texture = (Texture*)tex->BackendUserData;
-            if (!texture)
-                break;
-
-            UpdateTexture(*texture, tex->GetPixels());
-
-            tex->Status = ImTextureStatus_OK;
-        }
-            break;
-
-        case ImTextureStatus_WantDestroy:
-        {
-            Texture* texture = (Texture*)tex->BackendUserData;
-
-            if (!texture)
-                break;
-            UnloadTexture(*texture);
-            tex->Status = ImTextureStatus_Destroyed;
-            MemFree(texture);
-            tex->BackendUserData = nullptr;
-            tex->SetTexID(ImTextureID_Invalid);
-        }
+    case ImTextureStatus_OK:
+    case ImTextureStatus_Destroyed:
+    default:
         break;
+
+    case ImTextureStatus_WantCreate:
+    {
+        Image img = {0};
+        img.width = tex->Width;
+        img.height = tex->Height;
+
+        img.format = tex->Format == ImTextureFormat_Alpha8 ? PIXELFORMAT_UNCOMPRESSED_GRAYSCALE : PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+        img.mipmaps = 1;
+        img.data = tex->GetPixels();
+
+        Texture *texture = (Texture *)MemAlloc(sizeof(Texture));
+        tex->BackendUserData = texture;
+        ;
+        *texture = LoadTextureFromImage(img);
+        tex->SetTexID(ImTextureID(texture->id));
+        tex->Status = ImTextureStatus_OK;
+    }
+    break;
+
+    case ImTextureStatus_WantUpdates:
+    {
+        Texture *texture = (Texture *)tex->BackendUserData;
+        if (!texture)
+            break;
+
+        UpdateTexture(*texture, tex->GetPixels());
+
+        tex->Status = ImTextureStatus_OK;
+    }
+    break;
+
+    case ImTextureStatus_WantDestroy:
+    {
+        Texture *texture = (Texture *)tex->BackendUserData;
+
+        if (!texture)
+            break;
+        UnloadTexture(*texture);
+        tex->Status = ImTextureStatus_Destroyed;
+        MemFree(texture);
+        tex->BackendUserData = nullptr;
+        tex->SetTexID(ImTextureID_Invalid);
+    }
+    break;
     }
 }
 
-void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data)
+void ImGui_ImplRaylib_RenderDrawData(ImDrawData *draw_data)
 {
     if (draw_data->Textures != nullptr)
     {
-        for (ImTextureData* tex : *draw_data->Textures)
+        for (ImTextureData *tex : *draw_data->Textures)
         {
             if (tex->Status != ImTextureStatus_OK)
                 ImGui_ImplRaylib_UpdateTexture(tex);
@@ -768,9 +766,9 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data)
 
     for (int l = 0; l < draw_data->CmdListsCount; ++l)
     {
-        const ImDrawList* commandList = draw_data->CmdLists[l];
+        const ImDrawList *commandList = draw_data->CmdLists[l];
 
-        for (const auto& cmd : commandList->CmdBuffer)
+        for (const auto &cmd : commandList->CmdBuffer)
         {
             EnableScissor(cmd.ClipRect.x - draw_data->DisplayPos.x, cmd.ClipRect.y - draw_data->DisplayPos.y, cmd.ClipRect.z - (cmd.ClipRect.x - draw_data->DisplayPos.x), cmd.ClipRect.w - (cmd.ClipRect.y - draw_data->DisplayPos.y));
             if (cmd.UserCallback != nullptr)
@@ -790,7 +788,7 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data)
     rlEnableBackfaceCulling();
 }
 
-void HandleGamepadButtonEvent(ImGuiIO& io, GamepadButton button, ImGuiKey key)
+void HandleGamepadButtonEvent(ImGuiIO &io, GamepadButton button, ImGuiKey key)
 {
     if (IsGamepadButtonPressed(0, button))
         io.AddKeyEvent(key, true);
@@ -798,7 +796,7 @@ void HandleGamepadButtonEvent(ImGuiIO& io, GamepadButton button, ImGuiKey key)
         io.AddKeyEvent(key, false);
 }
 
-void HandleGamepadStickEvent(ImGuiIO& io, GamepadAxis axis, ImGuiKey negKey, ImGuiKey posKey)
+void HandleGamepadStickEvent(ImGuiIO &io, GamepadAxis axis, ImGuiKey negKey, ImGuiKey posKey)
 {
     constexpr float deadZone = 0.20f;
 
@@ -810,7 +808,7 @@ void HandleGamepadStickEvent(ImGuiIO& io, GamepadAxis axis, ImGuiKey negKey, ImG
 
 bool ImGui_ImplRaylib_ProcessEvents(void)
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
     bool focused = IsWindowFocused();
     if (focused != LastFrameFocused)
@@ -839,7 +837,7 @@ bool ImGui_ImplRaylib_ProcessEvents(void)
     LastSuperPressed = superDown;
 
     // walk the keymap and check for up and down events
-	for (int keyItr = 0; keyItr < MAX_RAYLIB_KEY; keyItr++)
+    for (int keyItr = 0; keyItr < MAX_RAYLIB_KEY; keyItr++)
     {
         const auto key = RaylibKeyMap[keyItr];
 
@@ -848,7 +846,7 @@ bool ImGui_ImplRaylib_ProcessEvents(void)
 
         if (IsKeyReleased(keyItr))
             io.AddKeyEvent(key, false);
-        else if(IsKeyPressed(keyItr))
+        else if (IsKeyPressed(keyItr))
             io.AddKeyEvent(key, true);
     }
 
@@ -877,12 +875,12 @@ bool ImGui_ImplRaylib_ProcessEvents(void)
         }
 
         auto setMouseEvent = [&io](int rayMouse, int imGuiMouse)
-            {
-                if (IsMouseButtonPressed(rayMouse))
-                    io.AddMouseButtonEvent(imGuiMouse, true);
-                else if (IsMouseButtonReleased(rayMouse))
-                    io.AddMouseButtonEvent(imGuiMouse, false);
-            };
+        {
+            if (IsMouseButtonPressed(rayMouse))
+                io.AddMouseButtonEvent(imGuiMouse, true);
+            else if (IsMouseButtonReleased(rayMouse))
+                io.AddMouseButtonEvent(imGuiMouse, false);
+        };
 
         setMouseEvent(MOUSE_BUTTON_LEFT, ImGuiMouseButton_Left);
         setMouseEvent(MOUSE_BUTTON_RIGHT, ImGuiMouseButton_Right);
