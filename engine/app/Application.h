@@ -17,14 +17,17 @@ namespace verlet
         virtual void OnStep(float dt) {};
         virtual void PostStep() {};
 
-        virtual void OnRender();
+        virtual void OnRender() {};
 
         void Run();
 
     protected:
+        verlet::World world;
+        verlet::Solver solver;
+
         int width = 1280;
         int height = 720;
-        bool debugMode = false;
+        bool debugMode = true;
         const char *title = "Verlet Engine";
     };
 }
