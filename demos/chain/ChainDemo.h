@@ -25,8 +25,6 @@ public:
     void OnRender() override;
 
 private:
-    verlet::World world;
-    verlet::Solver solver;
     verlet::Chain chain;
 
     std::vector<verlet::Vec2> drafts;

@@ -6,6 +6,7 @@
 #include "../state/SystemState.h"
 #include "rlImGui.h"
 #include "imgui.h"
+#include "../debug/DebugPanel.h"
 
 #include <string>
 
@@ -15,8 +16,6 @@ Application::Application()
 {
     InitWindow(width, height, title);
 }
-
-void Application::OnRender() {}
 
 void Application::Run()
 {
@@ -42,6 +41,7 @@ void Application::Run()
         while (eps >= verlet::PHYSICS_STEP)
         {
             OnStep(verlet::PHYSICS_STEP);
+            solver.step(world, dt, 6);
             eps -= verlet::PHYSICS_STEP;
         }
 
@@ -53,13 +53,14 @@ void Application::Run()
 
         rlImGuiBegin();
         OnRender();
+        drawConstraints(world);
+        drawParticles(world);
 
         if (debugMode)
         {
-            ImGui::Begin("Engine", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-            ImGui::Text(std::string{"FPS: " + std::to_string(1 / dt)}.c_str());
-            ImGui::End();
+            DrawEngineStats(world, dt, eps);
         }
+
         rlImGuiEnd();
 
         EndDrawing();

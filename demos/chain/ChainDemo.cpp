@@ -1,6 +1,5 @@
 #include "ChainDemo.h"
 #include "../../engine/physics/constraints/BoundsConstraint.h"
-#include "../../engine/render/Renderer.h"
 #include "raylib.h"
 
 #include <iostream>
@@ -117,8 +116,6 @@ void ChainDemo::OnStep(float dt)
             p.accel += dir * mouseForce.strength;
         }
     }
-
-    solver.step(world, dt, 3);
 }
 
 void ChainDemo::OnRender()
@@ -143,9 +140,6 @@ void ChainDemo::OnRender()
 
         DrawCircle(drafts.back().x, drafts.back().y, PARTICLE_RADIUS, Color{255, 255, 255, 50});
     }
-
-    drawConstraints(world);
-    drawParticles(world);
 }
 
 void ChainDemo::PostStep()
