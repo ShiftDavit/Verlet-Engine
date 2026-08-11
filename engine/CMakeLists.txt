@@ -6,6 +6,8 @@ add_library(
     physics/constraints/BoundsConstraint.cpp
     physics/constraints/DistanceConstraint.cpp
     
+    debug/DebugPanel.cpp
+
     app/Application.cpp
     
     render/Renderer.cpp
