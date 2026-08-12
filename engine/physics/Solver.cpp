@@ -38,9 +38,9 @@ void Solver::solveCollisions(World &world)
         for (std::size_t j{i + 1}; j < world.particles.size(); ++j)
         {
             Particle &p2 = world.particles[j];
-            Vec2 collisionAxis = p1.pos - p2.pos;
-            float dist = collisionAxis.magnitude();
-            float combinedRadius = p1.radius + p2.radius;
+            const Vec2 collisionAxis = p1.pos - p2.pos;
+            const float dist = collisionAxis.magnitude();
+            const float combinedRadius = p1.radius + p2.radius;
 
             // Overlapping
             if (dist < combinedRadius)
@@ -59,9 +59,9 @@ void Solver::solveCollisions(World &world)
 
 void Solver::step(World &world, float dt)
 {
-    verletIntegrate(world, dt);
     applyConstraints(world);
     solveCollisions(world);
+    verletIntegrate(world, dt);
 }
 
 void Solver::step(World &world, float dt, int subSteps)
