@@ -1,4 +1,12 @@
 #pragma once
 #include "../state/SystemState.h"
 
-void DrawEngineStats(verlet::World &, float = 1.f, float = 1.f);
+struct EngineDebugStats
+{
+    float frameDt{};
+    float fixedPhysicsDt{};
+    float physicsAccumulatorDt{};
+    int physicsSteps{};
+};
+
+void DrawEngineStats(verlet::World &, const EngineDebugStats &stats);
