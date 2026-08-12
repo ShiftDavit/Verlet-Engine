@@ -1,8 +1,9 @@
+#include "demos/stressTest/StressTest.h"
 #include "demos/chain/ChainDemo.h"
 
 int main()
 {
-    ChainDemo demo;
+    StressTest demo;
     demo.Run();
 
     return 0;
