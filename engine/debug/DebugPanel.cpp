@@ -8,11 +8,12 @@ void DrawEngineStats(verlet::World &world, float drawDt, float physicsStepMs)
 {
     ImGui::Begin("Engine Stats", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::SeparatorText("Draw");
-    ImGui::Text("FPS: %.2f", 1 / drawDt);
+    ImGui::Text("Frame Time: %.3f", drawDt);
+    ImGui::Text("FPS: %.d", (int)(1 / drawDt));
     ImGui::SeparatorText("Physics");
     ImGui::BeginGroup();
     ImGui::EndGroup();
-    ImGui::Text("Step MS: %.2f", physicsStepMs);
+    ImGui::Text("Step MS: %.3f", physicsStepMs);
     ImGui::SeparatorText("State");
     ImGui::Text("Particles: %d", world.particles.size());
     ImGui::Text("Constraints: %d", world.constraints.size());
