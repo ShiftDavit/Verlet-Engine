@@ -21,7 +21,6 @@ public:
     void OnStart() override;
     void OnUpdate(float dt) override;
     void OnStep(float dt) override;
-    void PostStep() override;
     void OnRender() override;
 
 private:

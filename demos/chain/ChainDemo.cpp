@@ -141,7 +141,3 @@ void ChainDemo::OnRender()
         DrawCircle(drafts.back().x, drafts.back().y, PARTICLE_RADIUS, Color{255, 255, 255, 50});
     }
 }
-
-void ChainDemo::PostStep()
-{
-}
