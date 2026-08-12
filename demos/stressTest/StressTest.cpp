@@ -1,13 +1,13 @@
 #include "StressTest.h"
 #include "../../engine/physics/constraints/BoundsConstraint.h"
+#include "../../engine/physics/constants.h"
 #include "raylib.h"
 
 #include <iostream>
 
 using namespace verlet;
 
-constexpr int PARTICLE_RADIUS{10};
-constexpr float KILL_DT_THRESHOLD{1.f / 60};
+constexpr int PARTICLE_RADIUS{5};
 
 void StressTest::OnStart()
 {
@@ -21,18 +21,18 @@ void StressTest::OnUpdate(float dt)
 {
     elapsed += dt;
 
-    if (elapsed > 1 && dt > KILL_DT_THRESHOLD)
+    if (elapsed > 1 && dt > PHYSICS_STEP)
     {
         killed = true;
     }
 
-    if (!killed && elapsed - lastSpawnTime >= 1 / spawnRate)
+    if (!killed && elapsed - lastSpawnTime >= 1.f / (spawnRate > 0 ? spawnRate : 1))
     {
         lastSpawnTime = elapsed;
         // Spawn a particle
         world.add(Particle{
-            {10, 10},
-            {0, 10},
+            {PARTICLE_RADIUS, PARTICLE_RADIUS},
+            {PARTICLE_RADIUS * .3, PARTICLE_RADIUS},
 
             {0, G},
 
