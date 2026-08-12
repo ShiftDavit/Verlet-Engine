@@ -9,7 +9,7 @@ public:
     void OnUpdate(float dt) override;
 
 private:
-    int spawnRate{10};
+    int spawnRate{144};
     bool killed{false};
     float elapsed{};
     float lastSpawnTime{-1};
