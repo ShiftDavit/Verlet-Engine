@@ -27,7 +27,7 @@ namespace verlet
             return std::sqrt(diffX * diffX + diffY * diffY);
         }
 
-        Vec2 unit()
+        Vec2 unit() const
         {
             float mag = magnitude();
             if (mag < 1e-6)
