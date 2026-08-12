@@ -41,7 +41,7 @@ void Application::Run()
         while (eps >= verlet::PHYSICS_STEP)
         {
             OnStep(verlet::PHYSICS_STEP);
-            solver.step(world, dt, 6);
+            solver.step(world, verlet::PHYSICS_STEP, 6);
             eps -= verlet::PHYSICS_STEP;
         }
 
