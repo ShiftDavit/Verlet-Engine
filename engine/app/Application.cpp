@@ -21,7 +21,7 @@ void Application::Run()
 {
     OnStart();
     rlImGuiSetup(true);
-    SetTargetFPS(120);
+    SetTargetFPS(144);
 
     float eps{};
     float dt{};
@@ -29,6 +29,7 @@ void Application::Run()
     {
         dt = GetFrameTime();
         eps += dt;
+        int physicsSteps{};
 
         if (IsKeyPressed(KEY_F1))
         {
@@ -41,15 +42,16 @@ void Application::Run()
         while (eps >= verlet::PHYSICS_STEP)
         {
             OnStep(verlet::PHYSICS_STEP);
-            solver.step(world, verlet::PHYSICS_STEP, 6);
+            solver.step(world, verlet::PHYSICS_STEP, verlet::SUBSTEP_COUNT);
             eps -= verlet::PHYSICS_STEP;
+            ++physicsSteps;
         }
 
         PostStep();
 
         // Render
         BeginDrawing();
-        ClearBackground(Color{20, 20, 20, 20});
+        ClearBackground(Color{10, 10, 10, 10});
 
         rlImGuiBegin();
         OnRender();
@@ -58,11 +60,16 @@ void Application::Run()
 
         if (debugMode)
         {
-            DrawEngineStats(world, dt, eps);
+            DrawEngineStats(
+                world,
+                EngineDebugStats{
+                    dt,
+                    verlet::PHYSICS_STEP,
+                    eps,
+                    physicsSteps});
         }
 
         rlImGuiEnd();
-
         EndDrawing();
     }
 
