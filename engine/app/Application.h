@@ -27,7 +27,7 @@ namespace verlet
 
         int width = 1280;
         int height = 720;
-        bool debugMode = true;
+        bool debugMode = false;
         const char *title = "Verlet Engine";
     };
 }
