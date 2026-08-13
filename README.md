@@ -141,8 +141,10 @@ This separation allows stable simulation even under high constraint density.
 
 ## 📚 What I Learned
 
-This is one of my C++ projects, so I got to practice various foundational skills such as memory safety with smart pointers and multi-file modular projects. 
-I also learned about how the backbones of modern real-time engines work and how they have evolved over the years.
+This project was an opportunity to strengthen my C++ fundamentals while building a functional 2D Verlet physics engine from the ground up. I practiced memory-safe resource management with smart pointers, modular multi-file architecture, and clean separation of engine systems.
+
+Beyond C++, I explored the core concepts behind modern real-time physics and game engines, including simulation loops, constraint-based physics, composition over inheritance, and rendering pipelines. The project also gave me hands-on experience with industry-relevant tools such as **CMake**, **raylib**, and **Dear ImGui** for building, rendering, and debugging the engine.
+
 
 ---
 ## Build and Run
