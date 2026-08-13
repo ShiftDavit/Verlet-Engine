@@ -48,7 +48,7 @@ Since every stress test resulted in a varying maximum number of particles that c
 
 <img width="597" height="150" alt="SpatialHashingStats" src="https://github.com/user-attachments/assets/abf6a204-a8e1-463c-a6ad-7eb0819e69d5" />
 
-While in the worst case, the time complexity of this algorithm remains O(n^2) (if all particles were somehow in the same cell), it bumps down the average-case time complexity of collision checking to O(n)eliminating a significant portion of redundant checks. I came across this method in Matthias Müller's paper (https://matthias-research.github.io/pages/tenMinutePhysics/11-hashing.pdf).
+While in the worst case, the time complexity of this algorithm remains O(n^2) (if all particles were somehow in the same cell or nearby cells), it bumps down the average-case time complexity of collision checking to O(n)eliminating a significant portion of redundant checks. I came across this method in Matthias Müller's paper (https://matthias-research.github.io/pages/tenMinutePhysics/11-hashing.pdf).
 
 ---
 
