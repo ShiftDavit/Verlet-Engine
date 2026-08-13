@@ -8,6 +8,7 @@
 using namespace verlet;
 
 constexpr int PARTICLE_RADIUS{5};
+constexpr float ROLLING_AVERAGE_WEIGHT{0.5};
 
 void StressTest::OnStart()
 {
@@ -21,7 +22,17 @@ void StressTest::OnUpdate(float dt)
 {
     elapsed += dt;
 
-    if (elapsed > 1 && dt > PHYSICS_STEP)
+    if (elapsed < 3)
+        return;
+
+    if (rollingDt == 0)
+    {
+        rollingDt = dt;
+    }
+
+    rollingDt = rollingDt * (1.f - ROLLING_AVERAGE_WEIGHT) + dt * ROLLING_AVERAGE_WEIGHT;
+
+    if (elapsed > 1 && rollingDt > PHYSICS_STEP)
     {
         killed = true;
     }

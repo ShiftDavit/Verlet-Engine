@@ -9,8 +9,9 @@ public:
     void OnUpdate(float dt) override;
 
 private:
-    int spawnRate{144};
+    int spawnRate{60};
     bool killed{false};
     float elapsed{};
     float lastSpawnTime{-1};
+    float rollingDt{};
 };
