@@ -3,6 +3,7 @@ add_library(
     STATIC
     
     physics/Solver.cpp
+    physics/CollisionGrid.cpp
     physics/constraints/BoundsConstraint.cpp
     physics/constraints/DistanceConstraint.cpp
     
