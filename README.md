@@ -48,25 +48,25 @@ Since every stress test resulted in a varying maximum number of particles that c
 
 <img width="597" height="150" alt="SpatialHashingStats" src="https://github.com/user-attachments/assets/abf6a204-a8e1-463c-a6ad-7eb0819e69d5" />
 
-While in the worst case, the time complexity of this algorithm remains O(n^2) (if all particles were somehow in the same cell or nearby cells), it bumps down the average-case time complexity of collision checking to O(n)eliminating a significant portion of redundant checks. I came across this method in Matthias Müller's paper (https://matthias-research.github.io/pages/tenMinutePhysics/11-hashing.pdf).
+While in the worst case, the time complexity of this algorithm remains O(n^2) (if all particles were somehow in the same cell or nearby cells), it bumps down the average-case time complexity of collision checking to O(n)eliminating a significant portion of redundant checks. I came across this method in Matthias Müller's presentation ([Blazing Fast Neighbor Search
+with Spatial Hashing](https://matthias-research.github.io/pages/tenMinutePhysics/11-hashing.pdf)).
 
 ---
 
 ## 🧠 Architecture
 
-The engine is split into five main pieces: the application loop, world state, physics solver, renderer, and demos.
+The engine is split into five main pieces: the application layer, world state, physics solver, renderer, and demos.
 
-### Application Loop
+### Application Layer
 
 `Application` owns the runtime loop and the active `World`. Each frame, it:
 
-1. Reads variable frame time with `GetFrameTime()`
-2. Calls demo-specific update logic through `OnUpdate(dt)`
-3. Advances physics using a fixed timestep accumulator
-4. Calls `PostStep()`
-5. Renders constraints, particles, and optional debug stats
+1. Initializes external systems (raylib and ImGui)
+2. Advances the solver using a fixed timestep accumulator
+3. Invokes hooks such as `OnUpdate()`, `OnStep()`, `PostStep()`, and `OnRender()`, allowing the user to hook into the loop at various points
+4. Renders constraints, particles, and optional debug stats
 
-Physics runs at a fixed `PHYSICS_STEP`, while rendering happens once per frame. This keeps the simulation more stable than tying physics directly to variable frame time.
+Physics runs at a fixed `PHYSICS_STEP`, while rendering happens once per frame. This keeps the simulation more stable, especially at lower FPS, preventing high frame times from making the particles explode all over the place. Every step is also divided into substeps, which allows for more accurate collision and constraint solving, further stabilizing the simulation.
 
 ### World State
 
@@ -141,9 +141,8 @@ This separation allows stable simulation even under high constraint density.
 
 ## 📚 What I Learned
 
-- Why Verlet integration is more stable than velocity-based systems
-- How constraint iteration affects stability vs performance
-- Debugging long-term numerical drift in physics simulations
+This is one of my C++ projects, so I got to practice various foundational skills such as memory safety with smart pointers and multi-file modular projects. 
+I also learned about how the backbones of modern real-time engines work and how they have evolved over the years.
 
 ---
 ## Build and Run
