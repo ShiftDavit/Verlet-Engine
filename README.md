@@ -54,10 +54,78 @@ While in the worst case, the time complexity of this algorithm remains O(n^2) (i
 
 ## 🧠 Architecture
 
-The engine runs in 3 stages per frame:
-1. Verlet integration step
-2. Constraint solving (iterative relaxation)
-3. Rendering
+The engine is split into five main pieces: the application loop, world state, physics solver, renderer, and demos.
+
+### Application Loop
+
+`Application` owns the runtime loop and the active `World`. Each frame, it:
+
+1. Reads variable frame time with `GetFrameTime()`
+2. Calls demo-specific update logic through `OnUpdate(dt)`
+3. Advances physics using a fixed timestep accumulator
+4. Calls `PostStep()`
+5. Renders constraints, particles, and optional debug stats
+
+Physics runs at a fixed `PHYSICS_STEP`, while rendering happens once per frame. This keeps the simulation more stable than tying physics directly to variable frame time.
+
+### World State
+
+`World` is a lightweight container for simulation data:
+
+- `particles` stores all active particles
+- `constraints` stores polymorphic constraints such as bounds and distance constraints
+
+Particles use Verlet-style state:
+
+```cpp
+struct Particle
+{
+    Vec2 pos;
+    Vec2 prevPos;
+    Vec2 accel;
+    float radius;
+    bool fixed;
+};
+```
+
+Velocity is not stored directly. Instead, it is inferred from the difference between `pos` and `prevPos`.
+
+### Physics Solver
+
+The `Solver` mutates the `World` during each fixed physics step. Its pipeline is:
+
+1. Apply constraints
+2. Solve particle collisions
+3. Integrate particle positions
+
+Integration uses Verlet motion:
+
+```cpp
+velocity = p.pos - p.prevPos;
+p.prevPos = p.pos;
+p.pos += velocity + p.accel * dt * dt;
+```
+
+Collision detection is accelerated with a spatial hash grid. The solver rebuilds the grid from current particle positions, then checks only particles in nearby cells instead of comparing every pair globally.
+
+### Constraints
+
+Constraints are objects that apply rules to the world. Each constraint implements:
+
+```cpp
+virtual void apply(World &world) = 0;
+virtual void draw(World &world) const {};
+```
+
+This allows constraints to affect physics and optionally render debug geometry. Current examples include boundary constraints and distance constraints for ropes/chains.
+
+### Rendering and Debugging
+
+Rendering is intentionally separate from simulation. The renderer reads the `World` and draws constraints and particles using Raylib. The debug panel uses ImGui to display frame time, FPS, physics accumulator state, particle count, and constraint count.
+
+### Demos
+
+Demos subclass `Application` and override hooks such as `OnStart`, `OnUpdate`, `OnStep`, and `OnRender`. This lets each demo define its own setup and behavior while reusing the same engine loop, world state, solver, renderer, and debug tools.
 
 This separation allows stable simulation even under high constraint density.
 
